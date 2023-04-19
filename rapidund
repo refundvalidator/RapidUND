@@ -9,6 +9,21 @@ PRUNING_RECENT=100
 PRUNING_EVERY=500
 PRUNING_INTERVAL=10
 
+MAIN_UND=https://github.com/unification-com/mainchain/releases/download/v1.7.0/und_v1.7.0_linux_x86_64.tar.gz
+TEST_UND=https://github.com/unification-com/mainchain/releases/download/v1.7.0/und_v1.7.0_linux_x86_64.tar.gz
+
+MAIN_COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
+TEST_COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
+
+MAIN_UPGRADE=NONE
+MAIN_UPGRADE_NAME=NONE
+MAIN_CURRENT_NAME=2-grog
+
+TEST_UPGRADE=NONE
+TEST_UPGRADE_NAME=NONE
+TEST_CURRENT_NAME=2-grog
+
+
 remove_und() {
     sudo systemctl daemon-reload
     sudo systemctl stop und
@@ -98,9 +113,10 @@ start_und() {
 
 set_mainnet() {
     GENESIS=https://raw.githubusercontent.com/unification-com/mainnet/master/latest/genesis.json
-    UND=https://github.com/unification-com/mainchain/releases/download/v1.6.3/und_v1.6.3_linux_x86_64.tar.gz
-    COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
-    UPGRADE=NONE
+    UND=$MAIN_UND
+    COSMOVISOR=$MAIN_COSMOVISOR
+    UPGRADE=$MAIN_UPGRADE
+    UPGRADE_NAME=$MAIN_UPGRADE_NAME
     SEEDS=0c2b65bc604a18a490f5f55bb7b4140cfb512ced@seed1.unification.io:26656,e66e0f89af19da09f676c85b262d591b8c2bb9d8@seed2.unification.io:26656
     RPC=sync1.unification.io:26657,sync2.unification.io:26657
     HANDH_URL=https://rest.unification.io/blocks/latest
@@ -109,9 +125,10 @@ set_mainnet() {
 
 set_testnet() {
     GENESIS=https://raw.githubusercontent.com/unification-com/testnet/master/latest/genesis.json
-    UND=https://github.com/unification-com/mainchain/releases/download/v1.6.3/und_v1.6.3_linux_x86_64.tar.gz
-    UPGRADE=NONE
-    COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
+    UND=$TEST_UND
+    COSMOVISOR=$TEST_COSMOVISOR
+    UPGRADE=$TEST_UPGRADE
+    UPGRADE_NAME=$TEST_UPGRADE_NAME
     SEEDS=e428c5653865da4a55f5599d7ff3203789abadfd@seed-testnet.unification.io:26656
     RPC=sync1-testnet.unification.io:26657,sync2-testnet.unification.io:26657
     HANDH_URL=https://rest-testnet.unification.io/blocks/latest
