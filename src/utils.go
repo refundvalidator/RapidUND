@@ -49,7 +49,7 @@ func fetchBinary(info BinaryInfo) error {
     // Allow binary to be executed
     os.Chmod(binary_path, 0755)
 
-    // Debuggings
+    // Debug
     cmd := exec.Command(fmt.Sprintf("%v",binary_path),"version")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -63,10 +63,34 @@ func fetchBinary(info BinaryInfo) error {
 }
 
 func fetchGenesis(info JSONInfo) error {
+    json_path := fmt.Sprintf("%v%v",info.path, info.file_name)
+    os.MkdirAll(info.path, 0755)
+    json_file, err := os.Create(json_path)
+    if err != nil  {
+        return err
+    }
+    defer json_file.Close()
+    // Get the data
+    resp, err := http.Get(info.url)
+    if err != nil {
+        return err
+    }
+    defer resp.Body.Close()
+
+    // Check server response
+    if resp.StatusCode != http.StatusOK {
+        return fmt.Errorf("bad status: %s", resp.Status)
+    }
+
+    // Writer the body to file
+    _, err = io.Copy(json_file, resp.Body)
+    if err != nil  {
+        return err
+    }
     return nil
 }
 
-func unTarGZ(tar_path, path string) error {
+func unTarGZ(tar_path, extract_path string) error {
     gzipStream , err := os.Open(tar_path)
     uncompressedStream, err := gzip.NewReader(gzipStream)
     if err != nil {
@@ -88,12 +112,14 @@ func unTarGZ(tar_path, path string) error {
         }
         // Switch case for each file type in tar (directory or regular file)
         switch header.Typeflag {
+            // Directory
             case tar.TypeDir:
-                if err := os.Mkdir(header.Name, 0755); err != nil {
+                if err := os.Mkdir(fmt.Sprintf("%v%v",extract_path,header.Name), 0755); err != nil {
                     log.Fatalf("ExtractTarGz: Mkdir() failed: %s", err.Error())
                 }
+            // File
             case tar.TypeReg:
-                outFile, err := os.Create(fmt.Sprintf("%v%v",path,header.Name))
+                outFile, err := os.Create(fmt.Sprintf("%v%v",extract_path,header.Name))
                 if err != nil {
                     log.Fatalf("ExtractTarGz: Create() failed: %s", err.Error())
                 }
@@ -101,7 +127,7 @@ func unTarGZ(tar_path, path string) error {
                     log.Fatalf("ExtractTarGz: Copy() failed: %s", err.Error())
                 }
                 outFile.Close()
-
+            // ???
             default:
                 log.Fatalf(
                     "ExtractTarGz: uknown type in %s",
