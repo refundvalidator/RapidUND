@@ -139,3 +139,8 @@ func unTarGZ(tar_path, extract_path string) error {
 
     return nil
 }
+
+func cleanUp(path string) error{
+    os.RemoveAll(path)
+    return nil
+}
