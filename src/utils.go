@@ -75,15 +75,18 @@ func unTarGZ(tar_path, path string) error {
 
     tarReader := tar.NewReader(uncompressedStream)
 
+    // For loop is golang's while loop too, for with no conditionals is like while True:
     for {
         header, err := tarReader.Next()
+        // Stops at the end of the tar
         if err == io.EOF {
             break
         }
+        // Breaks on all other errors
         if err != nil {
             log.Fatalf("ExtractTarGz: Next() failed: %s", err.Error())
         }
-
+        // Switch case for each file type in tar (directory or regular file)
         switch header.Typeflag {
             case tar.TypeDir:
                 if err := os.Mkdir(header.Name, 0755); err != nil {
@@ -110,12 +113,3 @@ func unTarGZ(tar_path, path string) error {
 
     return nil
 }
-
-// func main() {
-//     r, err := os.Open("./file.tar.gz")
-//     if err != nil {
-//         fmt.Println("error")
-//     }
-//     ExtractTarGz(r)
-// }
-
