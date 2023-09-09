@@ -47,7 +47,7 @@ revert_and_exit
 
 #Reset current, just to be sure
 rm -rf $HOME/.und_mainchain/cosmovisor/current && \
-ln -s $HOME/.und_mainchain/cosmovisor/upgrades/3-keyleth $HOME/.und_mainchain/cosmovisor/current && \
+ln -s $HOME/.und_mainchain/cosmovisor/upgrades/2-grog $HOME/.und_mainchain/cosmovisor/current && \
 clear
 revert_and_exit
 
